@@ -1,0 +1,5 @@
+rpc:
+   name: 10
+   version: 1.0
+   serverHost: 20
+   serverPort: 8080
