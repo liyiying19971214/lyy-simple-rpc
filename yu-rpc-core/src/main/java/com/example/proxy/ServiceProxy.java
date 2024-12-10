@@ -18,11 +18,9 @@ import java.lang.reflect.Method;
  */
 public class ServiceProxy implements InvocationHandler {
 
-
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Serializer  serializer=new JdkSerializer();
-
         RpcRequest rpcRequest = RpcRequest.builder()
                 .methodName(method.getName())
                 .serviceName(method.getDeclaringClass().getName())
@@ -33,7 +31,6 @@ public class ServiceProxy implements InvocationHandler {
                 .body(serializer.serialize(rpcRequest)).execute()) {
             byte[] bytes = execute.bodyBytes();
             RpcResponse deserialize = serializer.deserialize(bytes, RpcResponse.class);
-
             return deserialize;
         }
 

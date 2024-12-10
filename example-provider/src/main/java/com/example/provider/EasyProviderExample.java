@@ -1,7 +1,6 @@
 package com.example.provider;
 
 import com.example.RpcApplication;
-import com.example.config.RpcConfig;
 import com.example.registry.LocalRegistry;
 import com.example.server.HttpServer;
 import com.example.server.VertxHttpServer;

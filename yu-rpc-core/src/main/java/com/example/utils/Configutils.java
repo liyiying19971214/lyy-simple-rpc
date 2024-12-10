@@ -1,9 +1,14 @@
 package com.example.utils;
 
 import cn.hutool.setting.dialect.Props;
+import io.netty.util.internal.ResourcesUtil;
 
+import java.io.File;
+import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * @author lyy
@@ -21,7 +26,9 @@ public class Configutils {
               StringBuffer sb = new StringBuffer("application");
               sb.append(ext);
               String filePath = sb.toString();
-              if (Files.exists(Paths.get(filePath))) {
+              String path = ResourcesUtil.class.getClassLoader().getResource(filePath).getPath();
+              File file = new File(path);
+              if (file.exists()) {
                   Props props = new Props(filePath);
                   return props.toBean(clazz, prefix);
               }
