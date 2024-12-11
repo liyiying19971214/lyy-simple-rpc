@@ -18,4 +18,5 @@ public class RpcConfig {
     private  int    serverPort=8080;
     private  Boolean  mock;
     private String  serializer= SerializerKey.JDK;
+    private  Boolean  lazyLoad;
 }

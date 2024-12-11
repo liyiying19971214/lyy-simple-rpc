@@ -18,6 +18,9 @@ public class JdkSerializer implements Serializer {
      */
     @Override
     public <T> byte[] serialize(T object) throws IOException {
+
+        //在这里进行内容加载
+
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
         objectOutputStream.writeObject(object);

@@ -1,24 +1,29 @@
 package com.example.serializer;
 
 
+import com.example.spi.SpiLoader;
+
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * 序列化器工厂（用于获取序列化器对象）
- *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @learn <a href="https://codefather.cn">编程宝典</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
  */
 public class SerializerFactory {
+
+
+
+    static {
+        SpiLoader.load(Serializer.class);
+    }
 
     /**
      * 序列化映射（用于实现单例）
      */
     private static final Map<String, Serializer> KEY_SERIALIZER_MAP = new HashMap<String, Serializer>() {{
-        put(SerializerKey.JDK, new JdkSerializer());
-        put(SerializerKey.JSON, new JsonSerializer());
+
+        SpiLoader.getInstance().load(Serializer.class);
+
     }};
 
     /**
@@ -33,7 +38,11 @@ public class SerializerFactory {
      * @return
      */
     public static Serializer getInstance(String key) {
-        return KEY_SERIALIZER_MAP.getOrDefault(key, DEFAULT_SERIALIZER);
+        //默认的实例构造器
+        SpiLoader instance = SpiLoader.getInstance();
+        instance.load(Serializer.class);
+
+        return instance.load(Serializer.class, key);
     }
 
 }
