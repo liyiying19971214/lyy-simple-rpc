@@ -1,8 +1,6 @@
 package com.example.model;
 
-
-
-
+import com.example.constant.RpcConstant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,9 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
-/**
- * RPC 请求
- */
 @Data
 @Builder
 @AllArgsConstructor
@@ -30,6 +25,11 @@ public class RpcRequest implements Serializable {
     private String methodName;
 
     /**
+     * 服务版本
+     */
+    private String serviceVersion = RpcConstant.DEFAULT_SERVICE_VERSION;
+
+    /**
      * 参数类型列表
      */
     private Class<?>[] parameterTypes;
@@ -40,4 +40,5 @@ public class RpcRequest implements Serializable {
     private Object[] args;
 
 }
+
 

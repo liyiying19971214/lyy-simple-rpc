@@ -13,7 +13,6 @@ public class EasyConsumerExample {
         // todo 需要获取 UserService 的实现类对象
         User user = new User();
         user.setName("lyy");
-        // 调用
         UserService userService = ProxyFactory.getProxy(UserService.class);
         //UserService userService = ProxyFactory.getMockProxy(UserService.class);
         User newUser = userService.getUser(user);

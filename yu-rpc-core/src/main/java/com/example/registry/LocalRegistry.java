@@ -1,6 +1,9 @@
 package com.example.registry;
 
 
+import com.example.serializer.Serializer;
+import com.example.spi.SpiLoader;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -8,6 +11,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * 本地注册中心
  */
 public class LocalRegistry {
+
+
+
 
     /**
      * 注册信息存储

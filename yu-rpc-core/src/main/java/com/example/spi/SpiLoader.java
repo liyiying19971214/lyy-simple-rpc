@@ -2,7 +2,7 @@ package com.example.spi;
 
 
 import cn.hutool.core.io.resource.ResourceUtil;
-import cn.hutool.core.lang.Singleton;
+import com.example.serializer.Serializer;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
@@ -11,11 +11,12 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class SpiLoader {
 
-    private  volatile  static      SpiLoader instance;
+    private  volatile  static   SpiLoader instance =null;
 
 
     //spi的系统路径
@@ -26,7 +27,6 @@ public class SpiLoader {
     private static final String RPC_CUSTOM_SPI_DIR = "META-INF/rpc/custom/";
 
 
-
     //路径内容
     private static final String[] SCAN_DIRS = new  String[]{RPC_SYSTEM_SPI_DIR,RPC_CUSTOM_SPI_DIR};
 
@@ -34,10 +34,10 @@ public class SpiLoader {
     private   static  Map<String, Map<String,Class<?>>> loaderMap=new HashMap<>();
 
 
-    private   SpiLoader(){
-        //代替默认构造方法
-        System.out.println("我没创建内容");
-    }
+    static Map<String,Object>  cacheMap=new ConcurrentHashMap<>();
+
+
+
 
 
     // 提供公共方法获取单例
@@ -48,13 +48,45 @@ public class SpiLoader {
                 if (instance == null) {
                     instance = new SpiLoader();
 
-
-
                 }
             }
         }
         return instance;
     }
+
+
+    /**
+     * 实例化内容
+     * @param tclass
+     * @param key
+     * @return
+     * @param <T>
+     */
+    public  <T>T initSerializer(Class<?> tclass, String key){
+        String name = tclass.getName();
+        Map<String, Class<?>> keyclassMap = loaderMap.get(name);
+        if(keyclassMap==null){
+            throw  new RuntimeException(String.format("未加载类型"));
+        }
+        if(!keyclassMap.containsKey(key)){
+            throw new RuntimeException(String.format("类型不存在"));
+        }
+        Class<?> aClass = keyclassMap.get(key);
+        String aClassName = aClass.getName();
+
+        //丢入缓存防止重复加载
+
+        if(!cacheMap.containsKey(aClassName)){
+            try {
+                cacheMap.put(aClassName,aClass.newInstance());
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            
+        }
+            return (T) cacheMap.get(aClassName);
+    }
+
 
 
 
@@ -63,7 +95,7 @@ public class SpiLoader {
      *
      * @return
      */
-    public   Map<String, Map<String, Class<?>>> load(Class<?> loadClass) {
+    public  static Map<String, Map<String, Class<?>>> load(Class<?> loadClass) {
         Map<String, Class<?>> calssMap = new HashMap<>();
         for (String scanDir : SCAN_DIRS)
             {
@@ -81,7 +113,7 @@ public class SpiLoader {
                             String key = split[0];
                             String className = split[1];
                             //放入到数据中去
-                            calssMap.put(key, className.getClass());
+                            calssMap.put(key, Class.forName(className));
                         }
                     } catch (Exception e) {
                         log.error(e.getMessage());
